@@ -1,10 +1,24 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
+import firebase from "../database/firebaseDB";
+import { useNavigation } from "@react-navigation/native";
+const auth = firebase.auth();
 
 export default function LoginScreen() {
+const navigation = useNavigation();
 const [email, setEmail] = useState("");
-const [password, setPassword] = useState("")
+const [password, setPassword] = useState("");
+// const [errorText, setErrorText] = useState("");
+
+async function login() {
+    try {
+        await auth.signInWithEmailAndPassword(email, password);
+        navigation.navigate("Chat");
+    } catch (error) {
+        console.log(error);
+    }
+}
   return (
     <View style={styles.container}>
         <Text style={styles.title}>Chat App</Text>
@@ -26,7 +40,7 @@ const [password, setPassword] = useState("")
             onChangeText={(text) => setPassword(text)}
         />
 
-        <TouchableOpacity style={styles.loginButton} onPress={null}>
+        <TouchableOpacity style={styles.loginButton} onPress={login}>
             <Text style={styles.buttonText}>Log In</Text>
         </TouchableOpacity>
         
@@ -45,11 +59,12 @@ const styles = StyleSheet.create({
       fontSize: 36,
       fontWeight: "bold",
       marginBottom: 24,
-      color: "blue"
+      color: "navy"
     },
     fieldTitle: {
       fontSize: 18,
       marginBottom: 12,
+      color: "navy"
     },
     input: {
       borderColor: "gray",
